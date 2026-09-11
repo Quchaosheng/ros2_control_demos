@@ -7,13 +7,22 @@ using namespace ros2_control_demo_example_18;
 class FakeTransport final : public CanTransport
 {
 public:
-  bool open(const std::string & interface_name) override {opened = interface_name; return true;}
+  bool open(const std::string & interface_name) override
+  {
+    opened = interface_name;
+    return true;
+  }
   ReceiveResult receive(WheelFeedback & value) override
   {
-    value = feedback; return ReceiveResult::OK;
+    value = feedback;
+    return ReceiveResult::OK;
   }
-  bool send(const WheelCommand & value) override {command = value; return true;}
-  void close() noexcept override {opened.clear();}
+  bool send(const WheelCommand & value) override
+  {
+    command = value;
+    return true;
+  }
+  void close() noexcept override { opened.clear(); }
   std::string opened;
   WheelFeedback feedback{0.5, -0.25};
   WheelCommand command{};
@@ -29,8 +38,8 @@ TEST(SocketCanTransport, EncodesAndDecodesSignedMilliradians)
 
 TEST(SocketCanTransport, SaturatesWireRangeAndMapsNanToZero)
 {
-  const auto payload = encode_wheel_command({std::numeric_limits<double>::infinity(),
-        std::nan("")});
+  const auto payload =
+    encode_wheel_command({std::numeric_limits<double>::infinity(), std::nan("")});
   const auto feedback = decode_wheel_feedback(payload);
   EXPECT_DOUBLE_EQ(feedback.left_velocity, 2147483.647);
   EXPECT_DOUBLE_EQ(feedback.right_velocity, 0.0);

@@ -22,7 +22,12 @@ struct WheelCommand
 class CanTransport
 {
 public:
-  enum class ReceiveResult { OK, NO_DATA, ERROR };
+  enum class ReceiveResult
+  {
+    OK,
+    NO_DATA,
+    ERROR
+  };
   virtual ~CanTransport() = default;
   virtual bool open(const std::string & interface_name) = 0;
   virtual ReceiveResult receive(WheelFeedback & feedback) = 0;
@@ -37,7 +42,7 @@ WheelFeedback decode_wheel_feedback(const std::array<std::uint8_t, 8> & payload)
 class SocketCanTransport final : public CanTransport
 {
 public:
-  ~SocketCanTransport() override {close();}
+  ~SocketCanTransport() override { close(); }
   bool open(const std::string & interface_name) override;
   ReceiveResult receive(WheelFeedback & feedback) override;
   bool send(const WheelCommand & command) override;
